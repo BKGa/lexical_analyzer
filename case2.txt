@@ -1,0 +1,32 @@
+#include <iostream>
+#include <string>
+#include <time.h>
+using namespace std;
+void displayAttributes();
+class Pet
+{
+  private:
+    int hunger;
+    int happiness;
+    int age;
+    string name;
+
+  public:
+    //Setters
+    void setHunger(int &hu)
+    {
+      hunger = 0;
+      hunger = hunger + hu;
+    }
+
+    void setHappiness(int &ha)
+    {
+      happiness = 0;
+      happiness = happiness + ha;
+    }
+
+    void setAge(int &ag)
+    {
+      age = 0;
+      age = age + ag;
+    }
