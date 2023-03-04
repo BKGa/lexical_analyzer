@@ -1,6 +1,6 @@
-[*schmeowdy*]
-while  (fahr <= upper)   a = 23.00; endwhile  [* this is sample *]
-123
-562
-Hello there (mynameisfred)
-87.2
+#include <iostream>
+
+int main() {
+    std::cout << "Hello World!";
+    return 0;
+}

@@ -1,32 +1,16 @@
-#include <iostream>
-#include <string>
-#include <time.h>
-using namespace std;
-void displayAttributes();
-class Pet
+[* this is comment for this sample code which
+   converts  Fahrenheit into Celcius *]
+function convert1x (fahr int)
 {
-  private:
-    int hunger;
-    int happiness;
-    int age;
-    string name;
-
-  public:
-    //Setters
-    void setHunger(int &hu)
-    {
-      hunger = 0;
-      hunger = hunger + hu;
-    }
-
-    void setHappiness(int &ha)
-    {
-      happiness = 0;
-      happiness = happiness + ha;
-    }
-
-    void setAge(int &ag)
-    {
-      age = 0;
-      age = age + ag;
-    }
+           return 5 * (fahr -32) / 9;
+}
+#
+     Int     low,  high, step;      [* declarations *]
+#
+     get (low, high, step);
+     while (low  <=  high )
+         {  put (low);
+             put (convert1x (low));
+             low =  low  +  step;
+         }
+     endwhile

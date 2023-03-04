@@ -150,16 +150,15 @@ void lexer(string input, string name_of_output) {
 
 int main(int argc, char* argv[]) {
 
-    string input, name_of_output;
+    string input, name_of_output, complete_input, name_of_input;
     ifstream myfile;
     ofstream outputFile;
-
+    cout << "Which file do you want to access: ";
+    cin >> name_of_input;
     cout << "What do you want to name output file: ";
     cin >> name_of_output;
 
-
-
-    myfile.open("case1.txt");
+    myfile.open(name_of_input + ".txt");
     if (!myfile.is_open()) {
         cout << "Could not open file: " << argv[1] << endl;
         return 1;
@@ -171,11 +170,13 @@ int main(int argc, char* argv[]) {
         outputFile << "______________________" << endl << endl;
         outputFile.close();
         while (getline(myfile, input)) {
-            lexer(input, name_of_output);
+          lexer(input, name_of_output);
         }
     }
+
     myfile.close();
 
+    return 0;
 }
 
 /* while not finished(i.e. not end of the source file) do

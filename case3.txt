@@ -1,0 +1,77 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <array>
+#include <iomanip>
+using namespace std;
+int main()
+{
+  [*Declaring variables*]
+  int leftOp,rightOp;
+  char operation;
+  [*Setting up the Menu*]
+  cout << "*** MAIN MENU ***" << endl;
+  cout << "A. Addition" << endl;
+  cout << "B. Subtraction" << endl;
+  cout << "C. Multiplication" << endl;
+  cout << "D. Division" << endl;
+  cout << "E. Modulus" << endl;
+  cout << "Enter menu choice:";
+  cin >> operation;
+  [*Using an if-statement based on the users INPUT]
+  if ((operation == 'A') || (operation == 'a'))
+  {
+    cout << endl << "Enter left operand:";
+    cin >> leftOp;
+    cout << endl << "Enter right operand:" << endl;
+    cin >> rightOp;
+    double addition;
+    addition = leftOp + rightOp;
+    cout << leftOp << " + " << rightOp << " = " << addition;
+  }
+  else if ((operation == 'B') || (operation == 'b'))
+  {
+    cout << endl << "Enter left operand:";
+    cin >> leftOp;
+    cout << endl << "Enter right operand:" << endl;
+    cin >> rightOp;
+    double subtraction;
+    subtraction = leftOp - rightOp;
+    cout << leftOp << " - " << rightOp << " = " << subtraction;
+  }
+  else if ((operation == 'C') || (operation == 'c'))
+  {
+    cout << endl << "Enter left operand:";
+    cin >> leftOp;
+    cout << endl << "Enter right operand:" << endl;
+    cin >> rightOp;
+    double multiplication;
+    multiplication = leftOp * rightOp;
+    cout << leftOp << " * " << rightOp << " = " << multiplication;
+  }
+  else if ((operation == 'D') || (operation == 'd'))
+  {
+    cout << endl << "Enter left operand:";
+    cin >> leftOp;
+    cout << endl << "Enter right operand:" << endl;
+    cin >> rightOp;
+    double division;
+    division = leftOp / rightOp;
+    cout << leftOp << " / " << rightOp << " = " << division;
+  }
+  else if ((operation == 'E') || (operation == 'e'))
+  {
+    cout << endl << "Enter left operand:";
+    cin >> leftOp;
+    cout << endl << "Enter right operand:" << endl;
+    cin >> rightOp;
+    double modulus;
+    modulus = leftOp % rightOp;
+    cout << leftOp << " % " << rightOp << " = " << modulus;
+  }
+  else
+    cout << endl << "Invalid menu choice, try again.";
+cout << endl;
+
+  return 0;
+}
