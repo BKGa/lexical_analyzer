@@ -1,8 +1,8 @@
-[* this is comment for this sample code which
-   converts  Fahrenheit into Celcius *]
+[* this is comment for this sample code which converts Fahrenheit into Celcius *]
+
 function convert1x (fahr int)
 {
-           return 5 * (fahr -32) / 9;
+           return 5 * (fahr -32.00) / 9;
 }
 #
      Int     low,  high, step;      [* declarations *]
@@ -13,4 +13,4 @@ function convert1x (fahr int)
              put (convert1x (low));
              low =  low  +  step;
          }
-     endwhile
+     endwhile;

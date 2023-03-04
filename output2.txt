@@ -1,12 +1,6 @@
 Token           Lexeme
 ______________________
 
-Identifier      converts
-Identifier      Fahrenheit
-Identifier      into
-Identifier      Celcius
-Operator        *
-Unknown:         ]
 Keyword         function
 Identifier      convert1x
 Separator       (
@@ -20,7 +14,7 @@ Operator        *
 Separator       (
 Identifier      fahr
 Operator        -
-Integer         32
+Real            32.00
 Separator       )
 Operator        /
 Integer         9
@@ -72,3 +66,4 @@ Identifier      step
 Separator       ;
 Separator       }
 Keyword         endwhile
+Separator       ;
