@@ -60,259 +60,566 @@ bool isSeparator(char current) {
     return false;
 }
 
-/*
-    void Rat23s(vector<string>& token) {
-        if(token.empty() == false){
-          cout << "<Rat23S> ::= <Opt Function Definitions> # <Opt Declaration List> # <Statement List>" << endl;
-          opt_FunctionDefinitions();
-          opt_Declaration_List();
-          Statement_List();
+
+
+    ///r29
+    void Empty(vector<string>& token)
+    {
+        cout << "<Empty> ::= Epsilon";
+    }
+
+    ///r28
+    void Primary(vector<string>& token){
+      int counter,decimal = 0;
+      vector<string> test;
+      test = token;
+      while (test.empty() == false){
+        if (test[0] == ".")
+        decimal++;
+        counter++;
+        test.pop_back();
+      }
+      if (isKeyword(token[0])){
+        token.pop_back();
+        if (token[0] == "("){
+          IDs();
+          if (token[0] != ")"){
+            cout << "Error! Expected )";
+            exit(-1);
+          }
         }
-        else{
-          cout << "Error! There are no valid lexemes." << endl;
-        }
-    }
-    //2
-    void opt_FunctionDefinitions(vector<string>& token) {
-      cout << "<Opt Function Definitions> ::= <Function Definitions> | <Empty>" << endl;
-        Function_Definition();
-    }
-    //3
-    void Function_Definition(vector<string>& token) {
-        //cout << " <Function Definition> -> <Function> <Function Definition Prime> \n <Function Definition Prime> ->  ,<Function Definition> | Epsilon";
-        Function();
-    }
-    //4
-    void Function(vector<string>& token) {
-        if (token == "function")
-        {
-            cout << "<Identifier>";
-        }
-        if (token == "(")
-        {
-            opt_Parameter_List();
-        }
-        else {
-            opt_Declaration_List();
-            Body();
-        }
-    }
-    //5
-    void opt_Parameter_List(vector<string>& token) {
-        Parameter_list();
-    }
-    //6
-    void Parameter_list(vector<string>& token) {
-        // cout << "<Parameter list> -> <Parameter> <Parameter list Prime> \n <Parameter list Prime> ->  ,<Parameter list> | Epsilon";
-        Parameter();
-    }
-    //7
-    void Parameter(vector<string>& token) {
-        IDs();
-        Qualifier();
-    }
-    //8
-    void Qualifier(vector<string>& token) {
-        if (token == "int") {}
-        if (token == "bool") {}
-        if (token == "real") {}
-    }
-    //9
-    void Body(vector<string>& token) {
-        if (token == "{") {
-            Statement_List();
-        }
-    }
-    //10
-    void opt_Declaration_List(vector<string>& token) {
-        Declaration_List();
-    }
-    //11
-    void Declaration_List(vector<string>& token) {
-        // cout << " <Declaration List> -> <Declaration> <Declaration List Prime> \n <Declaration List Prime> -> ; <<Declaration List> | Epsilon";
-        Declaration();
+      }
+      if (isSingleDigit(token[0])){
+        token.pop_back();
+      }
+      if(isdigit(token[0])){
+        token.pop_back()
+      }
+      if (token[0] == "true" || token[0] == "false"){
+        token.pop_back();
+      }
+      if ((isKeyword(token[0]) == false) & (isSingleDigit(token[0]) == false) && (decimal >= 0) && (token[0] != "true") && (token  != "false")){
+        Expression(token);
       }
 
-    void DeclarationListPrime(vector<string>& token) {
-      if (token == ";")
-      Declaration_List();
-      DeclarationListPrime();
     }
 
-    //r12
-    void Declaration() {
-        Qualifier();
-        IDs();
+    ///r27
+    void Factor(vector<string>& token) {
+      cout << "<Factor> ::= - <Primary> | <Primary>" << endl;
+        if (token[0] == "-")
+            cout << "<Primary>";
+        else if  (token.empty() == false)
+            cout << "<Primary>";
+        else{
+            cout << "Error! Expected Factor." <<  endl;
+            exit(-1);
+          }
     }
-    //r13
-    void IDs() {
-        cout << " <IDs> -> <Identifier> <IDs Prime> \n <IDsPrime> -> , <IDS> | Epsilon";
+
+    //r26
+    void Term(vector<string>& token) {
+        cout << "<Term> ::= <Factor> <Term’>" << endl;
+        Factor(token);
+        TermPrime(token);
     }
-    //r14
-    void Statement_List() {
-        // cout << " <Statement List> -> <Statement> <Statement List Prime> \n <Statement List Prime> -> , <Statement List> | Epsilon";
-        Statement();
+
+    void TermPrime(vector<string>& token){
+        if (token[0] == "*"){
+          token.pop_back();
+          Factor(token);
+          TermPrime(token);
+        }
+        else if (token[0] == "/") {
+          token.pop_back();
+          Factor(token);
+          TermPrime(token);
+        }
+        else{
+          Empty(token);
+        }
     }
-    //r15
-    void Statement() {
+
+    //r25
+    void Expression(vector<string>& token) {
+        cout << "<Expression> ::= <Term> <Expression’>" << endl;
+        Term(token);
+        ExpressionPrime(token);
+    }
+
+    void ExpressionPrime(vector<string>& token){
+      cout << "<Expression’> ::= + <Term> <Expression’> | - <Term> <Expression’> | <Empty>" << endl;
+      if (token[0] == "+"){
+        token.pop_back(token);
+        Term(token);
+        ExpressionPrime(token);
+      }
+      else if (token[0] == "-"){
+        token.pop_back();
+        Term(token);
+        ExpressionPrime(token);
+      }
+      else{
+        Empty();
+      }
+    }
+
+    //r24
+    void Relop(vector<string>& token)
+    {
         switch (token) {
-        case "<Compound>":
-            cout << "<Statement> -> <Compound>";
-        case "<Assign>":
-            cout << "<Statement> -> <Assign>";
-        case "<If>":
-            cout << "<Statement> -> <If>";
-        case "<Return>":
-            cout << "<Statement> -> <Return>";
-        case "<Print>":
-            cout << "<Statement> -> <Print>";
-        case "<Scan>":
-            cout << "<Statement> -> <Scan>";
-        case "<While>":
-            cout << "<Statement> -> <While>";
+        case "==":
+            cout << "==" << endl;
+            token.pop_back();
+            break;
+        case "!=":
+            cout << "!=" << endl;
+            token.pop_back();
+            break;
+        case ">":
+            cout << ">" << endl;
+            token.pop_back();
+            break;
+        case "<":
+            cout << "<" << endl;
+            token.pop_back();
+            break;
+        case "<=":
+            cout << "<=" << endl;
+            token.pop_back();
+            break;
+        case ">=":
+            cout << ">=" << endl;
+            token.pop_back();
+            break;
+        default:
+            cout << "Error! Expected Relop." << endl;
+            exit(-1);
         }
     }
-    //r16
-    void Compound() {
-        if (token == "{") {
-            Statement_List();
+
+    //r23
+    void Condition(vector<string>& token) {
+        cout << "<Expression> <Relop> <Expression>";
+        Expression(token);
+        Relop(token);
+        Expression(token);
+    }
+
+    //r22
+    void While(vector<string>& token)
+    {
+        cout << "while (<Condition>) <Statement> endwhile" << endl;
+        if (token[0] == "while"){
+          token.pop_back();
+          if  (token[0] == "(") {
+            token.pop_back();
+            Condition(token);
+            if (token[0] == ")"){
+              Statement(token);
+              if (token[0] != "endwhile"){
+                cout << "Error! Expected endwhile" << endl;
+                exit(-1);
+              }
+            }
+            else{
+              cout << "Error! Expected )" << endl;
+              exit(-1);
+            }
+          }
+          else {
+            cout << "Error! Expected (" << endl;
+          }
+        }
+        else {
+          cout << "Error! Expected Put" << endl;
+          exit(-1);
         }
     }
-    //r17
-    void Assign() {
-        cout << "<Assign> -> <Identifier> = <Expression>;";
+
+    //r21
+    void Scan(vector<string>& token)
+    {
+      cout << "get(<IDs>);";
+      if (token[0] == "get"){
+        token.pop_back();
+        if  (token[0] == "(") {
+          token.pop_back();
+          IDs(token);
+          if (token[0] == ")"){
+            if (token[0] != ";"){
+              cout << "Error! Expected ;" << endl;
+              exit(-1);
+            }
+          }
+          else{
+            cout << "Error! Expected )" << endl;
+            exit(-1);
+          }
+        }
+        else {
+          cout << "Error! Expected (" << endl;
+        }
+      }
+      else {
+        cout << "Error! Expected Put" << endl;
+        exit(-1);
+      }
     }
+
+    //r20
+    void Print(vector<string>& token) {
+        cout << "put (<Expression>);";
+        if (token[0] == "put"){
+          token.pop_back();
+          if  (token[0] == "(") {
+            token.pop_back();
+            Expression(token);
+            if (token[0] == ")"){
+              if (token[0] != ";"){
+                cout << "Error! Expected ;" << endl;
+                exit(-1);
+              }
+            }
+            else{
+              cout << "Error! Expected )" << endl;
+              exit(-1);
+            }
+          }
+          else {
+            cout << "Error! Expected (" << endl;
+          }
+        }
+        else {
+          cout << "Error! Expected Put" << endl;
+          exit(-1);
+        }
+    }
+
+    //r19
+    void Return(vector<string>& token) {
+        cout << "return ';' | return <Expression>;";
+        if (token[0] == "return") {
+            token.pop_back();
+            if (token[0] != ";"){
+              Expression(token);
+            }
+            else if (token[0] != ";"){
+              cout << "Error! Expected ;" << endl;
+              exit(-1);
+            }
+        }
+        else  {
+          cout << "Error! Expected return." << endl;
+          exit(-1);
+        }
+    }
+
     //r18
-    void ifRule() {
-        if (token == "if") {
-            lexer()
+    void ifRule(vector<string>& token) {
+        if (token[0] == "if") {
+            token.pop_back();
         }
         else
         {
             cout << "error: 'if' expected";
         }
-        if (token == "(") {
-            lexer();
+        if (token[0] == "(") {
+            token.pop_back();
         }
         else
         {
             cout << "error: '(' expected";
         }
-        Condition();
+        Condition(token);
+        if (token[0] == "else"){
+          token.pop_back();
+          Statement(token);
+          if (token[0] != "fi"){
+            cout << "Error! Expected fi." <<  endl;
+          }
+        }
+        else if (token[0] != "fi"){
+          cout << "Error! Expected fi." <<  endl;
+        }
     }
-    //r19
-    void Return() {
-        cout << "return ';' | return <Expression>;";
-        if (token == ";") {
-            cout << "return ';'";
+
+    //r17
+    void Assign(vector<string>& token) {
+        cout << "<Assign> -> <Identifier> = <Expression>;";
+        if (isKeyword(token[0]) == true){
+          token.pop_back();
+        }
+        if  (token[0] == "="){
+          Expression(token);
+        }
+        else{
+          cout << "Error! Expected =" << endl;
+          exit(-1);
+        }
+
+    }
+
+    //r16
+    void Compound(vector<string>& token) {
+        cout << "<Compound> ::= { <Statement List> }" << endl;
+        if (token[0] == "{"){
+          token.pop_back();
+        }
+        else{
+          cout << "Error! Expected {" << endl;
+        }
+        Statement_List();
+        if (token[0] == "}"){
+          token.pop_back();
+        }
+        else{
+          cout << "Error! Expected {" << endl;
+        }
+    }
+
+    //r15
+    void Statement(vector<string>& token) {
+      int counter = 0;
+      vecctor<string> test;
+      string key;
+      bool bracket1, bracket2, equal, ifs, returns, put, get, whiles;
+      while (test.empty() == false){
+        counter++;
+        test.pop_back();
+        if (test[0] == "{"){
+          bracket1 = true;
+        }
+        if ((test[0] == "}") && (bracket1 == true)){
+          bracket2 = true;
+        }
+        if (test[0] == "="){
+          equal = true;
+        }
+        if (test[0] == "if"){
+          ifs = true;
+        }
+        if (test[0] == "return"){
+          returns = true;
+        }
+        if (test[0] == "put"){
+          put = true;
+        }
+        if (test[0] == "get"){
+          get == true;
+        }
+        if (test[0] == "while"){
+          whiles == true;
+        }
+      }
+        if(bracket2 == true){
+            cout << "<Statement> -> <Compound>";
+            Compound(token);
+          }
+        if(equal == true){
+            cout << "<Statement> -> <Assign>";
+            Assign(token);
+          }
+        if(ifs == true){
+            cout << "<Statement> -> <If>";
+            ifRule(token);
+          }
+        if(returns == true){
+            cout << "<Statement> -> <Return>";
+            Return(token);
+          }
+        if(put == true){
+            cout << "<Statement> -> <Print>";
+            Print(token);
+          }
+        if(get == true){
+            cout << "<Statement> -> <Scan>";
+            Scan(token);
+          }
+        if(whiles  == true){
+            cout << "<Statement> -> <While>";
+            While(token);
+          }
+        }
+    }
+
+
+    //r14
+    void Statement_List(vector<string>& token) {
+        cout << " <Statement List> -> <Statement> <Statement List Prime> \n <Statement List Prime> -> , <Statement List> | Epsilon";
+        if (token.empty() == false) {
+          Statement(token);
+          if (token.empty() == false){
+            Statement_List(token);
+          }
         }
         else {
-            cout << " return <Expression>;";
+          cout << "Error! Expected a Statement List." << endl;
         }
     }
-    //r20
-    void Print() {
-        cout << "put (<Expression>);";
-    }
-    //r21
-    void Scan()
-    {
-        cout << "get (<IDs>);";
-    }
-    //r22
-    void While()
-    {
-        cout << "while (<Condition>) <Statement> endwhile";
-    }
-    //r23
-    void Condition() {
-        cout << "<Expression> <Relop> <Expression>";
-    }
-    //r24
-    void Relop()
-    {
-        switch (token) {
-        case '==':
-            cout << "==";
-        case '!=':
-            cout << "!=";
-        case '>':
-            cout << ">";
-        case '<':
-            cout << "<";
-        case '<=':
-            cout << "<=";
-        case '>=':
-            cout << ">=";
+
+    //r13
+    void IDs(vector<string>& token) {
+        cout << " <IDs> -> <Identifier> <IDs Prime> \n <IDsPrime> -> , <IDS> | Epsilon";
+        if(token.empty() == false){
+          token.pop_back();
+          if (token.empty() == false){
+            IDs(token);
+          }
+        }
+        else {
+          cout << "Error! Expected an ID." << endl;
         }
     }
-    void T() {
-        if (token == "identifier")
-        {
-            lexer();
+
+    //r12
+    void Declaration(vector<string>& token) {
+      cout << "<Declaration> ::= <Qualifier > <IDs>" << endl;
+        Qualifier(token);
+        IDs(token);
+    }
+
+    //11
+    void Declaration_List(vector<string>& token) {
+        cout << " <Declaration List> -> <Declaration> <Declaration List Prime> \n <Declaration List Prime> -> ; <<Declaration List> | Epsilon";
+        if (token.empty() == false){
+          Declaration(token);
+          if (token[0] != ";"){
+            cout << "Error! Expected ;" <<  endl;
+            exit(-1);
+          }
+          //DeclarationListPrime();
+          if (token.empty() == false){
+            Declaration_List(token);
+          }
         }
-        else
-            cout << "Identifier expected";
+        else{
+          cout << "Error! Expected Declaration." << endl;
+          exit(-1);
+        }
+
+      }
+
+    /*void DeclarationListPrime(vector<string>& token) {
+      if (token[0] == ";")
+      Declaration_List();
+      DeclarationListPrime();
+    }*/
+
+    //10
+    void opt_Declaration_List(vector<string>& token) {
+      cout << "<Opt Declaration List> ::= <Declaration List> | <Empty>" << endl;
+        Declaration_List(token);
     }
-    void EPrime() {
-        if (token == "+" || token == "-")
-        {
-            lexer();
-            T();
-            EPrime();
+
+
+    //9
+    void Body(vector<string>& token) {
+      cout << "<Body> ::= { < Statement List> }" << endl;
+        if (token[0] == "{") {
+            Statement_List(token);
+        }
+        else {
+          cout << "Error! Expected Body." << endl;
+          exit(-1);
         }
     }
-    //r25
-    void Expression() {
-        T();
-        EPrime();
-        if (!eof)
-        {
-            cout << "error";
+
+    //8 END OF A BRANCH
+    void Qualifier(vector<string>& token) {
+        if (token[0] == "int") {
+          cout << " <Qualifier> ::= int" << endl;
+        }
+        else if (token[0] == "bool") {
+          cout << " <Qualifier> ::= bool" << endl;
+        }
+        else if (token[0] == "real") {
+          cout << " <Qualifier> ::= real" << endl;
+        }
+        else {
+          cout << "Error! Expected Qualifier." << endl;
+          exit(-1);
+        }
+        token.pop_back();
+    }
+
+    //7
+    void Parameter(vector<string>& token) {
+      cout << "<Parameter> ::= <IDs > <Qualifier>" << endl;
+        IDs(token);
+        Qualifier(token);
+    }
+
+    //6
+    void Parameter_list(vector<string>& token) {
+        cout << "<Parameter list> -> <Parameter> <Parameter list Prime> \n <Parameter list Prime> ->  ,<Parameter list> | Epsilon";
+        Parameter(token);
+        if(token.empty() == false){
+          Parameter_list(token);
+        }
+        else {
+          cout << "Error! Expected parameter." <<  endl;
+          exit(-1);
         }
     }
-    void F() {
-        if (token == "identifier")
-        {
-            lexer();
+
+    //5
+    void opt_Parameter_List(vector<string>& token) {
+      cout << "<Opt Parameter List> -> <Parameter List> | <Empty>" << endl;
+      Parameter_list(token);
+    }
+
+    //4
+    void Function(vector<string>& token) {
+        cout << "<Function> ::= function <Identifier> ( <Opt Parameter List> ) <Opt Declaration List> <Body>" << endl;
+        //Display ID
+        if (isKeyword(token[0]) == true){
+          token.pop_back();
         }
-        else
-            cout << "Identifier expected";
+        else{
+          cout << "Error! Expected Identifier." << endl;
+          exit(-1);
+        }
+        opt_Parameter_List(token);
+        opt_Declaration_List(token);
+        Body(token);
     }
-    void TPrime() {
-        if (token == "*" || == "/")
-        {
-            lexer();
-            F();
-            TPrime();
+
+    ///3
+    void Function_Definition(vector<string>& token) {
+        cout << " <Function Definition> -> <Function> <Function Definition Prime> \n <Function Definition Prime> ->  ,<Function Definition> | Epsilon";
+        if(token.empty() == false){
+          Function(token);
+          if(token.empty() == false){
+            Function_Definition(token);
+          }
+        }
+        else{
+          cout << "Error! Expected function." << endl;
+          exit(-1);
         }
     }
-    //r26
-    void Term() {
-        F();
-        TPrime();
-        if (!eof)
-        {
-            cout << "error";
+
+    //2
+    void opt_FunctionDefinitions(vector<string>& token) {
+      cout << "<Opt Function Definitions> ::= <Function Definitions> | <Empty>" << endl;
+        Function_Definition(token);
+    }
+
+    //r1
+    void Rat23s(vector<string>& token) {
+        if(token.empty() == false){
+          cout << "<Rat23S> ::= <Opt Function Definitions> # <Opt Declaration List> # <Statement List>" << endl;
+          opt_FunctionDefinitions(token);
+          opt_Declaration_List(token);
+          Statement_List(token);
+        }
+        else{
+          cout << "Error! There are no valid lexemes." << endl;
+          exit(-1);
         }
     }
-    //r27
-    void Factor() {
-        if (token == "-")
-            cout << "<Primary>";
-        else
-            cout << "<Primary>";
-    }
-    //r28
-    void Primary()
-    {
-    }
-    //r29
-    void Empty()
-    {
-        cout << "epsilon";
-    }
-    */
+
 
     void lexer(string input, string name_of_output, vector<string>& words) {
         string current_token = "";
@@ -434,13 +741,13 @@ bool isSeparator(char current) {
     }
 
 void syntaxAnalyzer(vector<string>& tokens){
-  //Rat23s(vector<string>& tokens);
-  int counter = 0;
+  Rat23s(vector<string>& tokens);
+  /*int counter = 0;
   while (tokens.empty() == false) {
     cout << tokens[counter] << endl;
     counter++;
     tokens.pop_back();
-  }
+  }*/
 }
 
 int main(int argc, char* argv[]) {
