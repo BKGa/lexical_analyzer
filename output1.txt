@@ -504,3 +504,32 @@ Keyword         return
 Integer         0
 Separator       ;
 Separator       }
+Token           Lexeme
+______________________
+
+Separator       #
+Identifier      include
+Operator        <
+Identifier      iostream
+Operator        >
+Keyword         int
+Identifier      main
+Separator       (
+Separator       )
+Separator       {
+Identifier      std
+Separator       :
+Separator       :
+Identifier      cout
+Operator        <
+Operator        <
+Unknown:         "
+Identifier      Hello
+Identifier      World
+Operator        !
+Unknown:         "
+Separator       ;
+Keyword         return
+Integer         0
+Separator       ;
+Separator       }

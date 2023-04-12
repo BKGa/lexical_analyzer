@@ -7,6 +7,38 @@
 
 using namespace std;
 
+void Empty(vector<string>& token);
+void Primary(vector<string>& token);
+void Factor(vector<string>& token);
+void Term(vector<string>& token);
+void TermPrime(vector<string>& token);
+void Expression(vector<string>& token);
+void ExpressionPrime(vector<string>& token);
+void Relop(vector<string>& token);
+void Condition(vector<string>& token);
+void While(vector<string>& token);
+void Scan(vector<string>& token);
+void Print(vector<string>& token);
+void Return(vector<string>& token);
+void ifRule(vector<string>& token);
+void Assign(vector<string>& token);
+void Compound(vector<string>& token);
+void Statement(vector<string>& token);
+void Statement_List(vector<string>& token);
+void IDs(vector<string>& token);
+void Declaration(vector<string>& token);
+void Declaration_List(vector<string>& token);
+void opt_Declaration_List(vector<string>& token);
+void Body(vector<string>& token);
+void Qualifier(vector<string>& token);
+void Parameter(vector<string>& token);
+void Parameter_list(vector<string>& token);
+void opt_Parameter_List(vector<string>& token);
+void Function(vector<string>& token);
+void Function_Definition(vector<string>& token);
+void opt_FunctionDefinitions(vector<string>& token);
+void Rat23s(vector<string>& token);
+
 bool isComment(char current, char next) {
     if (current == '[' && next == '*') {
         return true;
@@ -82,7 +114,7 @@ bool isSeparator(char current) {
       if (isKeyword(token[0])){
         token.pop_back();
         if (token[0] == "("){
-          IDs();
+          IDs(token);
           if (token[0] != ")"){
             cout << "Error! Expected )";
             exit(-1);
@@ -92,13 +124,13 @@ bool isSeparator(char current) {
       if (isSingleDigit(token[0])){
         token.pop_back();
       }
-      if(isdigit(token[0])){
-        token.pop_back()
+      if(isSingleDigit(token[0])){
+        token.pop_back();
       }
       if (token[0] == "true" || token[0] == "false"){
         token.pop_back();
       }
-      if ((isKeyword(token[0]) == false) & (isSingleDigit(token[0]) == false) && (decimal >= 0) && (token[0] != "true") && (token  != "false")){
+      if ((isKeyword(token[0]) == false) & (isSingleDigit(token[0]) == false) && (decimal >= 0) && (token[0] != "true") && (token[0] != "false")){
         Expression(token);
       }
 
@@ -150,7 +182,7 @@ bool isSeparator(char current) {
     void ExpressionPrime(vector<string>& token){
       cout << "<Expression’> ::= + <Term> <Expression’> | - <Term> <Expression’> | <Empty>" << endl;
       if (token[0] == "+"){
-        token.pop_back(token);
+        token.pop_back();
         Term(token);
         ExpressionPrime(token);
       }
@@ -160,41 +192,26 @@ bool isSeparator(char current) {
         ExpressionPrime(token);
       }
       else{
-        Empty();
+        Empty(token);
       }
     }
 
     //r24
     void Relop(vector<string>& token)
     {
-        switch (token) {
-        case "==":
-            cout << "==" << endl;
+        if (token[0] == "<" || token[0] == ">" || token[0] == "=" || token[0] == "!") {
+          token.pop_back();
+          if (token[0] == "="){
             token.pop_back();
-            break;
-        case "!=":
-            cout << "!=" << endl;
-            token.pop_back();
-            break;
-        case ">":
-            cout << ">" << endl;
-            token.pop_back();
-            break;
-        case "<":
-            cout << "<" << endl;
-            token.pop_back();
-            break;
-        case "<=":
-            cout << "<=" << endl;
-            token.pop_back();
-            break;
-        case ">=":
-            cout << ">=" << endl;
-            token.pop_back();
-            break;
-        default:
-            cout << "Error! Expected Relop." << endl;
+          }
+          else{
+            cout << "Error! Expecting = for Relop." << endl;
             exit(-1);
+          }
+        }
+        else {
+          cout  << "Error! Expecting <, >, =, or ! for Relop." << endl;
+          exit(-1);
         }
     }
 
@@ -369,7 +386,7 @@ bool isSeparator(char current) {
         else{
           cout << "Error! Expected {" << endl;
         }
-        Statement_List();
+        Statement_List(token);
         if (token[0] == "}"){
           token.pop_back();
         }
@@ -381,7 +398,7 @@ bool isSeparator(char current) {
     //r15
     void Statement(vector<string>& token) {
       int counter = 0;
-      vecctor<string> test;
+      vector<string> test;
       string key;
       bool bracket1, bracket2, equal, ifs, returns, put, get, whiles;
       while (test.empty() == false){
@@ -441,7 +458,6 @@ bool isSeparator(char current) {
             While(token);
           }
         }
-    }
 
 
     //r14
@@ -604,6 +620,9 @@ bool isSeparator(char current) {
     void opt_FunctionDefinitions(vector<string>& token) {
       cout << "<Opt Function Definitions> ::= <Function Definitions> | <Empty>" << endl;
         Function_Definition(token);
+        if (token[0] == "#"){
+          Empty(token);
+        }
     }
 
     //r1
@@ -611,7 +630,15 @@ bool isSeparator(char current) {
         if(token.empty() == false){
           cout << "<Rat23S> ::= <Opt Function Definitions> # <Opt Declaration List> # <Statement List>" << endl;
           opt_FunctionDefinitions(token);
+          if(token[0] != "#"){
+            cout << "Error! Expected #" << endl;
+            exit(-1);
+          }
           opt_Declaration_List(token);
+          if(token[0] != "#"){
+            cout << "Error! Expected #" << endl;
+            exit(-1);
+          }
           Statement_List(token);
         }
         else{
@@ -741,7 +768,7 @@ bool isSeparator(char current) {
     }
 
 void syntaxAnalyzer(vector<string>& tokens){
-  Rat23s(vector<string>& tokens);
+  Rat23s(tokens);
   /*int counter = 0;
   while (tokens.empty() == false) {
     cout << tokens[counter] << endl;
